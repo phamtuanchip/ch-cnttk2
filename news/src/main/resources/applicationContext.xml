@@ -1,0 +1,137 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mongo="http://www.springframework.org/schema/data/mongo"
+	xsi:schemaLocation="http://www.springframework.org/schema/context
+          http://www.springframework.org/schema/context/spring-context-3.0.xsd
+          http://www.springframework.org/schema/data/mongo
+          http://www.springframework.org/schema/data/mongo/spring-mongo-1.0.xsd
+          http://www.springframework.org/schema/beans
+          http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+<!-- 	<mongo:mongo id="mongo" host="127.0.0.1" port="27017" /> -->
+<!-- <mongo:mongo id="mongo" host="localhost" port="27017" /> -->
+<mongo:mongo id="mongo" host="127.12.5.1" port="27017" />
+	<mongo:db-factory dbname="jsprhcloud" />
+
+	<bean id="connectionFactoryLocator" class="org.springframework.social.connect.support.ConnectionFactoryRegistry">
+	    <property name="connectionFactories">
+	        <list>
+	            <bean class="org.springframework.social.facebook.connect.FacebookConnectionFactory">
+	                <constructor-arg value="${facebook.clientId}" />
+	                <constructor-arg value="${facebook.clientSecret}" />				
+	            </bean>
+	        </list>
+	    </property>
+	</bean>
+	
+
+	<bean id="taskServiceF"
+		class="com.cloud.service.impl.TaskServiceFactoryLoader">
+		<property name="taskService" ref="taskService"></property>
+	</bean>
+	
+	<bean id="newsServiceF"
+		class="com.cloud.jornal.banco.sv.ServiceFactoryLoader">
+		<property name="newsService" ref="newsService"></property>
+	</bean>
+    
+    <bean id="newsService" class="com.cloud.jornal.banco.dao.NewsMongoDAO">
+		<property name="mongoTemplate" ref="mongoTemplate"></property>
+	</bean>
+
+	<bean class="com.cloud.ws.rest.TaskWebservice">
+		<property name="taskServiceF" ref="taskServiceF"></property>
+	</bean>
+
+	<bean id="dataSource"
+		class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
+		<property name="url" value="jdbc:mysql://localhost:3306/mobilecheckin" />
+		<property name="username" value="root" />
+		<property name="password" value="t123456" />
+	</bean>
+	
+	
+
+<!-- 	<bean id="mongoTemplate" class="org.springframework.data.mongodb.core.MongoTemplate"> -->
+<!-- 		<constructor-arg name="mongoDbFactory" ref="mongoDbFactory" /> -->
+<!-- 	</bean> -->
+	
+	<bean id="mongoTemplate" class="org.springframework.data.mongodb.core.MongoTemplate">
+    <property name="writeResultChecking" value="EXCEPTION"/>
+    <property name="writeConcern" value="FSYNC_SAFE"/>
+    <constructor-arg ref="mongo"/>
+    <constructor-arg name="databaseName" value="jsprhcloud"/>
+    <constructor-arg name="userCredentials" ref="userCredentials"/>
+</bean>
+
+<bean id="userCredentials" class="org.springframework.data.authentication.UserCredentials">
+    <constructor-arg name="username" value="admin" />
+    <constructor-arg name="password" value="hZdXjbmA6MK4" />
+</bean>
+
+	<bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
+		<property name="dataSource" ref="dataSource"></property>
+	</bean>
+
+<!-- 	<bean id="taskService" class="com.nttdata.mobilecheckin.service.impl.TaskServiceImpl"> -->
+<!-- 		<property name="jdbcTemplate" ref="jdbcTemplate"></property> -->
+<!-- 	</bean> -->
+
+	<bean id="taskService" class="com.cloud.service.impl.TaskServiceMongoImpl">
+		<property name="mongoTemplate" ref="mongoTemplate"></property>
+	</bean>
+
+	<bean id="runMeTask" class="com.cloud.schedule.RunMeTask">
+		<property name="taskServiceF" ref="taskServiceF"></property>
+	</bean>
+	<!-- Spring Quartz -->
+	<bean name="runMeJob" class="org.springframework.scheduling.quartz.JobDetailFactoryBean">
+		
+		<property name="jobClass" value="com.cloud.schedule.RunMeJob" />
+		<property name="durability" value="true"/>
+		<property name="jobDataAsMap">
+			<map>
+				<entry key="runMeTask" value-ref="runMeTask" />
+			</map>
+		</property>
+
+	</bean>
+
+	<!-- <bean id="runMeJob" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean"> 
+		<property name="targetObject" ref="runMeTask" /> <property name="targetMethod" 
+		value="printMe" /> </bean> -->
+
+	<!-- Simple Trigger, run every 5 seconds -->
+	<bean id="simpleTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerFactoryBean">
+
+		<property name="jobDetail" ref="runMeJob" />
+		<property name="repeatInterval" value="5000" />
+		<property name="startDelay" value="1000" />
+
+	</bean>
+
+	<!-- Cron Trigger, run every 5 seconds -->
+	<bean id="cronTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+
+		<property name="jobDetail" ref="runMeJob" />
+		<property name="cronExpression" value="0/5 * * * * ?" />
+
+	</bean>
+
+	<bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+		<property name="jobDetails">
+			<list>
+				<ref bean="runMeJob" />
+			</list>
+		</property>
+
+		<property name="triggers">
+			<list>
+				<ref bean="simpleTrigger" />
+			</list>
+		</property>
+	</bean>
+
+</beans>

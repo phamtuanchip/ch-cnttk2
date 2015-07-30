@@ -1,0 +1,29 @@
+!-- Jobs -->
+<bean name="processToExecuteJob" class="org.springframework.scheduling.quartz.JobDetailFactoryBean"> <!-- JobDetailBean on Quartz 1.X -->
+    <property name="jobClass" value="com.mycompany.quartz.ProcessToExecuteJob" />
+    <property name="name" value="processToExecuteJob"/>
+    <property name="group" value="default"/>
+</bean>
+
+
+<!-- Triggers -->
+<bean id="demoTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean"> <!-- CronTriggerBean on Quartz 1.X -->
+    <property name="jobDetail" ref="processToExecuteJob" />
+    <property name="cronExpression" value="0/15 * * * * ?" />
+</bean>
+
+
+<!-- Database -->
+<jee:jndi-lookup id="quartzDataSource" jndi-name="jdbc/imsQuartzDS" resource-ref="true" />
+
+
+<!-- Scheduler -->
+<bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+    <property name="dataSource" ref="quartzDataSource"/>
+    <property name="overwriteExistingJobs" value="false"/>
+    <property name="triggers">
+        <list>
+            <ref bean="demoTrigger" />
+        </list>
+    </property>
+</bean>
