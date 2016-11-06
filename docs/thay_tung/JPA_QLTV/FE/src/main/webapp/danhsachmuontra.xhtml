@@ -1,0 +1,45 @@
+<ui:composition template="/WEB-INF/templates/layout.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+	 
+	<ui:define name="content">
+		<h:form>
+			<p:growl id="messages"></p:growl>
+			<p:panel id="basic4" header="Đặt mượn" footer="Xem thêm"
+				style="margin-bottom:20px">
+				<h:panelGrid columns="1" cellpadding="10">
+					<p:dataTable id="muon" var="s" value="#{homeView.datmuon}">
+				<p:column headerText="Id">
+					<h:outputText value="#{s.id}" />
+				</p:column>
+					<p:column headerText="Tên">
+					<h:outputText value="#{s.reader.Name}" />
+				</p:column>
+				<p:column headerText="Ngày mượn">
+					<h:outputText value="#{s.date}" />
+				</p:column>
+
+				<p:column headerText="Ngày trả">
+					<h:outputText value="#{s.resevDate}" />
+				</p:column>
+
+				 
+
+			</p:dataTable>
+			  
+				</h:panelGrid>
+			</p:panel>
+ 			
+			 <p:panel id="basic5" header="Nhắc trả" footer="Xem thêm"
+				style="margin-bottom:20px">
+				</p:panel>
+				
+				 <p:panel id="basic6" header="Đặt mua" footer="Xem thêm"
+				style="margin-bottom:20px">
+				</p:panel>
+		</h:form>
+	</ui:define>
+</ui:composition>

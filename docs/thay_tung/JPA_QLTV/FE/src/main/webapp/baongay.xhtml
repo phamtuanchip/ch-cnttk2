@@ -1,0 +1,49 @@
+<ui:composition template="/WEB-INF/templates/layout.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+	<ui:define name="content">
+		<h:form>
+			<p:growl id="messages"></p:growl>
+			<p:dataTable id="bookList" var="s" value="#{homeView.dailies}">
+				<p:column headerText="Id">
+					<h:outputText value="#{s.id}" />
+				</p:column>
+
+				<p:column headerText="Tên">
+					<h:outputText value="#{s.name}" />
+				</p:column>
+
+				<p:column headerText="Loại báo">
+					<h:outputText value="#{s.type}" />
+				</p:column>
+
+				<p:column headerText="Ngày phát hành">
+					<h:outputText value="#{s.date}" />
+				</p:column>
+
+				<p:column headerText="Số lượng còn">
+					<h:outputText value="#{s.num}" />
+				</p:column>
+
+
+			</p:dataTable>
+			<p:outputLabel value="Nhập báo:"></p:outputLabel>
+			<p:panelGrid id="inputGroup" columns="2">
+				<p:outputLabel value="Tên báo:"></p:outputLabel>
+				<p:inputText value="#{homeView.baongay.name}"></p:inputText>
+				<p:outputLabel value="Loại báo:"></p:outputLabel>
+				<p:inputText value="#{homeView.baongay.type}"></p:inputText>
+				<p:outputLabel value="Ngày phát hành:"></p:outputLabel>
+				<p:calendar value="#{homeView.baongay.date}"></p:calendar>
+				<p:outputLabel value="Số lượng:"></p:outputLabel>
+				<p:inputText value="#{homeView.baongay.num}"></p:inputText>
+			</p:panelGrid>
+			<p:commandButton value="Lưuu" action="#{homeView.daily}"
+				update="messages,bookList,inputGroup"></p:commandButton>
+
+		</h:form>
+	</ui:define>
+</ui:composition>

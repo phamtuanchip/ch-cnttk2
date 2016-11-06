@@ -1,0 +1,53 @@
+<ui:composition template="/WEB-INF/templates/layout.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+	<ui:define name="content">
+
+		<h:form>
+			<p:growl id="messages"></p:growl>
+			<p:panelGrid columns="2">
+				<p:outputLabel value="Độc giả:"></p:outputLabel>
+				
+				 
+				<p:autoComplete id="acSimple2" value="#{autoCompleteView.docgia.name}"
+					completeMethod="#{autoCompleteView.completeName}" />
+				<p:outputLabel value="Ngày mượn:"></p:outputLabel>
+				<p:calendar value="#{autoCompleteView.phieudatmuon.date}"></p:calendar>
+				<p:outputLabel value="Mã thẻ:"></p:outputLabel>
+				 
+				<p:autoComplete id="acSimple3" value="#{autoCompleteView.docgia.cardNum}"
+					completeMethod="#{autoCompleteView.completeCard}" />
+					
+				 <p:outputLabel for="option" value="Loại:" />
+		        <p:selectOneMenu id="option" value="#{autoCompleteView.option}" style="width:125px">
+		            <f:selectItem itemLabel="Chọn loại" itemValue="" />
+		            <f:selectItem itemLabel="Sách" itemValue="sach" />
+		            <f:selectItem itemLabel="Báo ngày" itemValue="baongay" />
+		            <f:selectItem itemLabel="Tạp chí" itemValue="tapchi" />
+		        </p:selectOneMenu>
+				<p:outputLabel value="Tên:" for="themes" />
+				<p:autoComplete id="themes" multiple="true"
+					value="#{autoCompleteView.selectedThemes}"
+					completeMethod="#{autoCompleteView.completeTheme}" var="theme"
+					itemLabel="#{theme.name}" itemValue="#{theme}"
+					converter="themeConverter" forceSelection="true">
+					<p:column style="width:10%">
+						<h:outputText styleClass="ui-theme ui-theme-#{theme.name}" />
+					</p:column>
+
+					<p:column>
+						<h:outputText value="#{theme.name}" />
+					</p:column>
+				</p:autoComplete>
+
+				<p:outputLabel value="Số lượng:"></p:outputLabel>
+				<p:inputText value="#{autoCompleteView.phieudatmuon.num}"></p:inputText>
+			</p:panelGrid>
+			<p:commandButton value="Lưu" action="#{autoCompleteView.book}"
+				update="messages"></p:commandButton>
+		</h:form>
+	</ui:define>
+</ui:composition>

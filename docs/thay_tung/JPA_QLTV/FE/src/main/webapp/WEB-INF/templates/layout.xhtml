@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+<h:head>
+	<title>Title</title>
+	<!-- 
+	<h:outputStylesheet name="bootstrap.min.css" library="css" />
+	<h:outputStylesheet name="bootstrap-responsive.min.css" library="css" />
+	<h:outputStylesheet name="bootstrap-theme.min.css" library="css" />
+	<h:outputScript library="js" name="bootstrap.min.js" />
+	 -->
+</h:head>
+<h:body>
+	<p:layout fullPage="true">
+		<p:layoutUnit position="north" styleClass="noScrolllayoutUnit"
+			style="border: 0;" resizable="false" closable="false"
+			collapsible="false">
+			<h:form>
+				<p:growl id="messages" />
+				<p:toolbar>
+					<f:facet name="left">
+						<p:commandButton value="Mượn" 
+						ajax="false" actionListener="#{toolbarView.borrow}"
+						icon="ui-icon-document" />
+						<p:commandButton value="Trả" 
+						ajax="false" actionListener="#{toolbarView.pay}"
+						icon="ui-icon-arrowrefresh-1-w" />
+						
+						<p:commandButton value="Nhập thêm"
+							ajax="false" actionListener="#{toolbarView.buy}"
+							 icon="ui-icon-disk" />
+
+						<span class="ui-separator"> <span
+							class="ui-icon ui-icon-grip-dotted-vertical" />
+						</span>
+						<p:commandButton type="button" 
+							icon="ui-icon-folder-open" />
+						<p:commandButton type="button" title="Save" icon="ui-icon-disk" />
+						<p:commandButton type="button" title="Delete" icon="ui-icon-trash" />
+						<p:commandButton type="button" title="Print" icon="ui-icon-print" />
+					</f:facet>
+
+					<f:facet name="right">
+						<p:menuButton value="Chọn">
+							<p:menuitem value="Lưu" actionListener="#{toolbarView.save}"
+								update="messages" icon="ui-icon-disk" />
+							<p:menuitem value="Cập nhật" actionListener="#{toolbarView.update}"
+								update="messages" icon="ui-icon-arrowrefresh-1-w" />
+							<p:menuitem value="Xoá" actionListener="#{toolbarView.delete}"
+								ajax="false" icon="ui-icon-close" />
+							<p:menuitem value="Trang chủ" url="home.xhtml"
+								icon="ui-icon-extlink" />
+						</p:menuButton>
+					</f:facet>
+
+				</p:toolbar>
+			</h:form>
+		</p:layoutUnit>
+
+<!-- 		<p:layoutUnit position="south" size="100" header="Bottom" -->
+<!-- 			resizable="true" closable="true" collapsible="true"> -->
+<!-- 			<h:outputText value="South unit content." /> -->
+<!-- 		</p:layoutUnit> -->
+
+		<p:layoutUnit position="west" 
+			resizable="false" closable="false" collapsible="false" >
+			<h:form>
+			<ui:include src="../templates/leftMenu.xhtml" />
+			<p:calendar value="#{calendarView.date2}" mode="inline" />
+			</h:form>
+		</p:layoutUnit>
+
+		<p:layoutUnit position="east"  
+			resizable="false" closable="true" collapsible="false">
+			<h:form>
+				<p:clock pattern="HH:mm:ss" />
+			</h:form>
+			<ui:include src="../templates/rightMenu.xhtml" />
+			
+		</p:layoutUnit>
+
+		<p:layoutUnit position="center">
+			<ui:insert name="content">Put default content here, if any.</ui:insert>
+		</p:layoutUnit>
+	</p:layout>
+</h:body>
+</html>

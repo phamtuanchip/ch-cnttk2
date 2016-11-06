@@ -1,0 +1,660 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet"
+	href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+
+<!-- Optional: Include the jQuery library -->
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+<script
+	src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.1/jquery-ui.min.js"></script>
+<link rel="stylesheet"
+	href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.1/themes/base/minified/jquery-ui.min.css">
+
+<!-- Optional: Incorporate the Bootstrap JavaScript plugins -->
+<script
+	src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+<script type="text/javascript"
+	src="https://maps.googleapis.com/maps/api/js?v=3&sensor=false&libraries=places"></script>
+
+<!-- <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?v=3&key=AIzaSyAdm1NhUYT7jonRRieUPnLSWw-yCxJRcd8&sensor=false&callback=initializeMap&libraries=places"></script>
+ -->
+
+<style>
+.Alert {
+	margin: 3px;
+	width: 40px;
+	height: 40px;
+	position: absolute;
+	left: 60px;
+	top: 10px;
+	background: green;
+	display: none;
+}
+
+.Alert.newcolor {
+	background: blue;
+}
+
+p {
+	color: red;
+}
+
+.Finished {
+	text-decoration: line-through;
+}
+</style>
+
+<script>
+var operation = "A"; //"A"=Adding; "E"=Editing
+	var selected_index = -1; //Index of the selected list item
+	var tbClients = localStorage.getItem("tbClients");//Retrieve the stored data
+	tbClients = JSON.parse(tbClients); //Converts string to object
+	if(tbClients == null) //If there is no data, initialize an empty array
+		tbClients = [];
+	
+$(function(){
+	if(typeof(Storage) !== "undefined") {
+    // Code for localStorage/sessionStorage.
+	console.log("save avaiable");
+	} else {
+		// Sorry! No Web Storage support..
+		console.log("your browser does not support");
+	}	
+
+
+var div = $(".Alert");
+function runIt(){
+div
+.show( "slow" )
+.animate({ left: "+=200" }, 2000 )
+.slideToggle( 1000 )
+.slideToggle( "fast" )
+.animate({ left: "-=200" }, 1500 )
+.hide( "slow" )
+.show( 1200 )
+.slideUp( "normal", runIt );
+}
+function showIt() {
+var n = div.queue( "fx" );
+//$("span" ).text( n.length );
+setTimeout( showIt, 100 );
+}	
+  
+ $("#addbtn").off().on("click", function add(){
+	 
+   Add();
+   List(); 
+  $("#taskform")[0].reset();
+  if($("#mappicker").css('display') === "block"){
+	$("#mappicker").css('display', 'none');
+  }
+ });
+
+	 $("#edit").bind("click", function(){
+		operation = "E";
+		selected_index = parseInt($(this).attr("alt").replace("Edit", ""));
+		var cli = JSON.parse(tbClients[selected_index]);
+		//$("#txtID").val(cli.ID);
+		$("#task").val(cli.Name);
+		$("#priority").val(cli.PRI);
+		$("#remind").attr("checked","checked");
+		$("#task").focus();
+	}); 
+
+	$("#delete").bind("click", function(){
+		selected_index = parseInt($(this).attr("alt").replace("Delete", ""));
+		Delete();
+	}); 
+	$("#Done").bind("click", function(){
+		selected_index = parseInt($(this).attr("alt").replace("Done", ""));
+		Done();
+	}); 
+	
+	$("#remind").bind("click", function(){
+		$("#mappicker").toggle();
+		console.log($("#mappicker").css('display') === "block");
+		if($("#mappicker").css('display') === "block"){
+			$("#search").click();
+		}
+	});
+ 
+ List(); 
+ 
+  $("#date").datepicker();
+  
+  //runIt();
+ // showIt();
+	 
+});
+
+function Add(){
+	var index = $("#data").find("tr").size();
+	var task = $("#task").val();
+	var priority = $("#priority").val();
+	var isReminde = $("#remind").is(":checked");
+	var date = $("#date").val();
+	var address = "";
+	var address_lat = "";
+	var address_lgn = "";
+	if(isReminde){
+	 address = $("#address").val();
+	 address_lat = $("#address_lat").val();
+	 address_lgn = $("#address_lgn").val();
+	}
+	var client = JSON.stringify({
+		ID    : index,
+		Name  : task,
+		PRI : priority,
+		Date : date,
+		Remide : isReminde,
+		Add : address,
+		Lat: address_lat,
+		Lgn: address_lgn,
+		Remided: 'false'
+	});
+	tbClients.push(client);
+	localStorage.setItem("tbClients", JSON.stringify(tbClients));
+
+	console.log("The data was saved.");
+	return true;
+} 
+
+function Edit(element){
+	var selected_index = parseInt($(element).attr("alt").replace("Edit", ""));
+	tbClients[selected_index] = JSON.stringify({
+			ID    : index,
+			Name  : task,
+			PRI : priority,
+			Remide : isReminde
+		});//Alter the selected item on the table
+	localStorage.setItem("tbClients", JSON.stringify(tbClients));
+	console.log("The data was edited.")
+	operation = "A"; //Return to default value
+	return true;
+} 
+ 
+ function Done(element){
+   var selected_index = parseInt($(element).attr("alt").replace("Done", ""));
+   
+ 	var cli = JSON.parse(tbClients[selected_index]);
+	if(cli.Remided == 'false') cli.Remided = true;
+	var client = JSON.stringify({
+		ID    : cli.ID,
+		Name  : cli.Name,
+		PRI : cli.PRI,
+		Date : cli.Date,
+		Remide : cli.Remide,
+		Add : cli.Add,
+		Lat: cli.Lat,
+		Lgn: cli.Lgn,
+		Remided: cli.Remided
+	});
+	console.log("is reminded " + cli.Remided);
+	tbClients.splice(selected_index, 1);
+	tbClients.push(client);
+	localStorage.setItem("tbClients", JSON.stringify(tbClients));
+
+	 
+	//localStorage.setItem("tbClients", JSON.stringify(tbClients));
+	reloadDb();
+	console.log("The data was edited.")
+	operation = "A"; //Return to default value
+	return true;
+} 
+ function Delete(element){
+	var selected_index = parseInt($(element).attr("alt").replace("Delete", ""));
+	tbClients.splice(selected_index, 1);
+	localStorage.setItem("tbClients", JSON.stringify(tbClients));
+	reloadDb();
+	console.log("Client deleted.");
+} 
+function reloadDb(){
+	$("#data").find("tr:gt(0)").remove();
+	List();
+}
+
+$("#taskform").bind("submit",function(){
+	if(operation == "A")
+		return Add();
+	else
+		return Edit();		
+});
+
+
+
+
+ function List(){		
+	console.log("load data");
+	$("#data").find("tr:gt(0)").remove();
+	console.log(tbClients);
+	for(var i in tbClients){
+	    console.log("iii " +i);
+		var cli = JSON.parse(tbClients[i]);
+		var finished = "";
+		
+		if(cli.Remided == true){finished = "Finished";}  
+		
+		var row = '<tr><td>'+cli.ID+'</td><td class="'+finished+'">'+cli.Name+'</td><td>'+cli.Date+'</td><td>'+cli.PRI+'</td><td>'+cli.Add+'</td><td><span alt="Done'+i+'" onclick="javaScript:Done(this);">Done</span>|<span alt="Edit'+i+'" onclick="javaScript:Edit(this);">Edit</span>|<span id="delete" alt="Delete'+i+'"  onclick="javaScript:Delete(this);">Delete</span></td></tr>'
+		
+	  	$("#data").append(row);
+	}
+	
+function calculate(){		
+	console.log("Calculate data");
+	var db = '["{"ID":1,"Name":"sdsadsa","PRI":"1","Date":"2016-09…44","Lgn":"105.83415979999995","Remided":"false"}", "{"ID":2,"Name":"sđấ","PRI":"1","Date":"2016-09-15"…44","Lgn":"105.83415979999995","Remided":"false"}"]'
+	var fx = pi +  ci;
+	
+	$("#min").find("tr:gt(0)").remove();
+	for(var i in db){
+	    console.log("iii " +i);
+		var cli = JSON.parse(db[i]);
+		var finished = "";
+		
+		if(cli.Remided == true){finished = "Finished";}  
+		
+		var row = '<tr><td>'+cli.ID+'</td><td class="'+finished+'">'+cli.Name+'</td><td>'+cli.Date+'</td><td>'+cli.PRI+'</td><td>'+cli.Add+'</td><td><span alt="Done'+i+'" onclick="javaScript:Done(this);">Done</span>|<span alt="Edit'+i+'" onclick="javaScript:Edit(this);">Edit</span>|<span id="delete" alt="Delete'+i+'"  onclick="javaScript:Delete(this);">Delete</span></td></tr>'
+		
+	  	$("#data").append(row);
+	}
+	}
+ 
+	
+(function mapInit($, google) {
+	var marker;
+	var cityCircle;	
+	var $mapCanvas = $('#map-canvas')[0];
+	var $searchLocation = $('#search');
+	var $address = $('#address');
+	var $radiusInput = $('#radius');
+	
+	var geocoder = new google.maps.Geocoder();
+	var mapOptions = {
+          center: new google.maps.LatLng(21.0277644,105.83415979999995),
+          zoom: 8
+        };
+    var map = new google.maps.Map( $mapCanvas, mapOptions);
+    var	 marker = new google.maps.Marker({
+				map: map,
+				draggable:true,
+				position: new google.maps.LatLng(21.0277644,105.83415979999995)
+	});  
+     
+	var infowindow = new google.maps.InfoWindow();			
+	infowindow.setContent("Hanoi, Vietnam");
+	infowindow.open(map, marker);
+	var populationOptions = {
+						strokeColor: 'blue',
+						strokeOpacity: 0.5,
+						strokeWeight: 1,
+						fillColor: '#45C8DC',
+						fillOpacity: 0.35,
+						map: map,
+						center: new google.maps.LatLng(21.0277644,105.83415979999995),
+						radius: 100
+					};
+	cityCircle = new google.maps.Circle(populationOptions);
+	cityCircle.map.fitBounds(cityCircle.getBounds());				
+	var autocomplete = new google.maps.places.Autocomplete($address[0]);
+	autocomplete.bindTo('bounds', map);
+	
+	
+	//$('#tableLocationListId tr').find("#updateArea").hide();
+	google.maps.event.addListener(autocomplete, 'place_changed', function() {
+		if(verifyAddress()){
+			$searchLocation.click();
+		}
+	});
+	google.maps.event.addListener(marker, 'dragend', function() {
+		console.log("in drag");
+		lat = marker.getPosition().lat();
+		lng = marker.getPosition().lng();
+		$("#latitudein").val(lat);
+		$("#longitudein").val(lng);
+		geocoder.geocode({'latLng': marker.getPosition()}, function(results, status) {
+			if (status == google.maps.GeocoderStatus.OK) {
+			      if (results[0]) {
+			    	  $("#address").val(results[0].formatted_address);
+			      }
+			}
+		});
+	});
+	
+	$('#search').off('click').on('click', function() {
+	console.log('search...');
+		if(verifyAddress()){
+			var mapOptions = {
+				zoom: 15,
+				center: new google.maps.LatLng(21.0277644,105.83415979999995)
+			};
+			var map = new google.maps.Map($('#map-canvas')[0], mapOptions);
+			var	 marker = new google.maps.Marker({
+				map: map,
+				draggable:true,
+				position: new google.maps.LatLng(21.0277644,105.83415979999995)
+			});
+			var geocoder = new google.maps.Geocoder();
+			var addressVal = $("#address").val();
+			//var cityCircle;	
+			geocoder.geocode({'address': addressVal}, function(results, status) {
+				if (status == google.maps.GeocoderStatus.OK) {
+					map.setCenter(results[0].geometry.location);
+					if (marker) {
+						marker.setMap(null);
+					}
+					var infowindow = new google.maps.InfoWindow();
+					marker = new google.maps.Marker({
+						map: map,
+						draggable:true,
+						position: results[0].geometry.location
+					});
+					
+					infowindow.setContent(results[0].formatted_address);
+					infowindow.open(map, marker);
+					var radius = parseInt($('#radius').val(), 10);
+					var populationOptions = {
+						strokeColor: 'blue',
+						strokeOpacity: 0.5,
+						strokeWeight: 1,
+						fillColor: '#45C8DC',
+						fillOpacity: 0.35,
+						map: map,
+						center: results[0].geometry.location,
+						radius: radius
+					};
+					google.maps.event.addListener(marker, 'dragend', function() {
+						console.log("in drag");
+						lat = marker.getPosition().lat();
+						lng = marker.getPosition().lng();
+						$("#address_lat").val(lat);
+						$("#address_lgn").val(lng);
+						geocoder.geocode({'latLng': marker.getPosition()}, function(results, status) {
+							if (status == google.maps.GeocoderStatus.OK) {
+							      if (results[0]) {
+							    	  $("#address").val(results[0].formatted_address);
+							    	  
+							    	  var $radiusInput = $('#radius');
+							    	  var radius = parseInt($radiusInput.val(), 10);
+										var populationOptions = {
+											strokeColor: 'blue',
+											strokeOpacity: 0.5,
+											strokeWeight: 1,
+											fillColor: '#45C8DC',
+											fillOpacity: 0.35,
+											map: map,
+											//center: results[0].geometry.location,
+											center: marker.getPosition(),
+											radius: radius
+										};
+									
+										if(cityCircle) {
+											 cityCircle.setMap(null);
+											}
+										cityCircle = new google.maps.Circle(populationOptions);
+										cityCircle.map.fitBounds(cityCircle.getBounds());
+										//$('#tableLocationListId tr.MapView').find("#localionName").val(results[0].formatted_address);
+										//$('#tableLocationListId tr.MapView').find("#latId").val(populationOptions.center.lat());
+										//$('#tableLocationListId tr.MapView').find("#lgnId").val(populationOptions.center.lng());
+										//$('#tableLocationListId tr.MapView').find("#radiusId").val(radius);
+							      }
+							}
+						});
+					});
+					if(cityCircle) {
+					 cityCircle.setMap(null);
+					}
+					cityCircle = new google.maps.Circle(populationOptions);
+					cityCircle.map.fitBounds(cityCircle.getBounds());
+					$("#address_lat").val(populationOptions.center.lat());
+					$("#address_lgn").val(populationOptions.center.lng());
+					 
+				} else {
+					//console.log('Geocode was not successful for the following reason: ' + status);
+				}
+			});
+		}
+	});
+	$('#radius').on('change', function() {
+			if(verifyAddress()){
+				cityCircle.setRadius(parseInt($(this).val(), 10));
+				cityCircle.map.fitBounds(cityCircle.getBounds());
+				//$("#radiusId").val(parseInt($(this).val(), 10));
+			}
+	});
+	
+})($, google);
+
+
+
+function verifyAddress(){
+	return true;
+}
+
+} 
+ 
+
+ 
+</script>
+
+</head>
+<body>
+
+	<div class="Alert"></div>
+	<div class="container">
+		<p>Create task management: test commit</p>
+
+
+		<form class="form-inline" role="form" id="taskform">
+			<div class="form-group">
+				<label for="task">New task</label> <input type="text"
+					class="form-control" id="task" required="required" />
+			</div>
+			<div class="form-group">
+				<label for="date">Date</label> <input type="date"
+					class="form-control" id="date" required="required" />
+			</div>
+			<div class="form-group">
+				<label for="priority">Priority</label> <input type="number"
+					class="form-control" id="priority" value="1" />
+			</div>
+			<div class="form-group">
+				<input type="checkbox" class="form-control" id="remind"> <label
+					for="remind"> Remind</label>
+			</div>
+			<button type="button" class="btn btn-default" id="addbtn">Save</button>
+		</form>
+		<div class="form-group" id="mappicker" style="display: none;">
+			<label for="address">when I am arrive</label> <input type="text"
+				class="form-control" id="address" value="Hanoi, Vietnam" /> <input
+				type="hidden" class="form-control" id="address_lat" /> <input
+				type="hidden" class="form-control" id="address_lgn" /> <label
+				for="priority">radius</label> <input type="number"
+				class="form-control" id="radius" value="100" />
+
+			<button type="button" class="btn btn-default" id="search">search</button>
+			<center>
+				<div id="map-canvas"
+					style="height: 600px; width: 800px; margin: 0; padding: 0;"></div>
+			</center>
+		</div>
+
+
+		<div class="table-responsive">
+			<table class="table table-striped table-bordered" id="data">
+				<thead>
+					<tr>
+						<th>#</th>
+						<th>Task</th>
+						<th>Date</th>
+						<th>Priority</th>
+						<th>Where</th>
+
+						<th>Action</th>
+					</tr>
+				</thead>
+				<tbody>
+
+				</tbody>
+			</table>
+			
+			<div class="table-responsive">
+			<table class="table table-striped table-bordered" id="ci">
+				<thead>
+					<tr>
+						<th>#</th>
+						<th>Chi phí</th>
+						<th>Date</th>
+						<th>Priority</th>
+						<th>Where</th>
+
+						<th>Action</th>
+					</tr>
+				</thead>
+				<tbody>
+
+				</tbody>
+			</table>
+			</div>
+			<div class="table-responsive">
+			<table class="table table-striped table-bordered" id="pi">
+				<thead>
+					<tr>
+						<th>#</th>
+						<th>Chi phí</th>
+						<th>Date</th>
+						<th>Priority</th>
+						<th>Where</th>
+
+						<th>Action</th>
+					</tr>
+				</thead>
+				<tbody>
+
+				</tbody>
+			</table>
+			</div>
+			
+			<div class="table-responsive">
+			<table class="table table-striped table-bordered" id="min">
+				<thead>
+					<tr>
+						<th>#</th>
+						<th>Fx</th>
+						<th>Ci</th>
+						<th>Pi</th>
+						<th>Sum</th>
+
+						<th>Is Min</th>
+					</tr>
+				</thead>
+				<tbody>
+
+				</tbody>
+			</table>
+			</div>
+		</div>
+
+	</div>
+	
+	
+	Đề tiểu luận
+
+I.                   Lý thuyết
+1.     Trình bày nguyên lý liên hệ ngược trong lý thuyết điều khiển hệ thống. Cho ví dụ minh họa trong lĩnh vực thương mại điện tử (Gợi ý liên hệ với Marketing 4C).
+2.     Phân tích để thấy rõ nguyên lý đó đã được áp dụng vào từng công việc trong chuỗi hoạt động quản trị kinh doanh  FCASP như thế nao?
+II.                Thực hành
+
+CSDL tập trung của mạng nội bộ một doanh nghiệp thường bị tấn công xâm nhập gây thiệt hại ở các cấp độ 1,2,3,4. Theo thống kê trong 300 ngày trong quá khử thì tần suất bị tấn công các cấp độ là:
+
+Cấp độ
+1
+2
+3
+4
+Tần suất
+0.2
+0.25
+0.3
+0.05
+ 
+
+Tần suất những ngày an toàn (ko bị tấn công) là 0.2
+
+Chi phí lắp đặt, cài đặt và duy trì hệ thống bảo vệ các cấp hàng ngày là:
+
+-         Hệ thống bảo vệ cấp 1:         2
+-         Hệ thống bảo vệ cấp 2:         3
+-         Hệ thống bảo vệ cấp 3:         4
+-         Hệ thống bảo vệ cấp 4:         6   đơn vị triệu/ ngày
+
+Hệ thống bảo vệ cấp cao hoàn toàn có thể bảo vệ các cấp xâm nhập cấp thấp hơn nhưng nếu chi phí có bảo vệ cấp thấp mà bị xâm nhập caaos cao hơn thì tổn thất hàng ngày sẽ là:
+
+-         Ko có bảo vệ, bị xâm nhập cấp 1:            5       
+-         Ko có bảo vệ, bị xâm nhập cấp 2:            6
+-         Ko có bảo vệ, bị xâm nhập cấp 3:            8
+-         Ko có bảo vệ, bị xâm nhập cấp 4:            10
+ 
+-         Có bảo vệ cấp 1, bị xâm nhập cấp 2:        3
+-         Có bảo vệ cấp 1, bị xâm nhập cấp 3:        4
+-         Có bảo vệ cấp 1, bị xâm nhập cấp 4:        8
+ 
+-         Có bảo vệ cấp 2, bị xâm nhập cấp 3:        2
+-         Có bảo vệ cấp 2, bị xâm nhập cấp 4:        4
+
+ 
+
+-         Có bảo vệ cấp 3, bị xâm nhập cấp 4
+
+Nếu có những ngày chỉ bị xâm nhập cấp thấp mà có trang bị bảo vệ cấp cao hơn thì được xem là lãng phí chênh lệch chi phí bảo vệ giữa hai cấp
+
+ 
+
+Hãy chọn quyết đính:  có lắp đặt, cài đặt hệ thống bảo vệ an ninh cho mạng nội bộ doanh nghiệp hay không? Nên bảo vệ ở cấp độ nào thì hợp lý nhất (chi phí kỳ vọng thấp nhất).
+
+ 
+
+Thuật toán:
+
+Xác định hàm tổn thất của hệ thống là F(x)
+
+          X là mức độ bảo vệ  x={0,1,2,3,4}
+
+F = F1 + F2      với:  F1(x) là tổn thất do thiếu bảo vệ
+
+Giả sử x = 2 (bảo vệ cấp 2)
+
+F1(2) = tổn thất nếu bị xâm nhập cấp 4 + tổn thất nếu bị xâm nhập cấp 3
+
+          F1(2) = 0.05*4 + 0.3*2
+
+F2(2) = lãng phí khi không bị xâm nhập + lãng phí khi chỉ bị xâm nhập cấp 1
+
+          F2(2) = 0.2*3 + 0.2*(3-2)
+
+ð F(x=2) = F1(2) +F2(2)
+
+Tổng quát: F(x) = ?    với pi = P{x=i}
+
+                                        C1i tổn thất khi x=i
+
+                                      C2i lãng phí khi x=i
+
+ 
+
+Sơ đồ thực hiện :         1.  Số liệu
+
+2.     Lắp công thức F(x)
+3.     Gán giá trị F(xi)
+4.     So sánh các F(xi)
+5.     Chọn F(x) = cực tiểu
+6.     Kết luận x=?
+
+ 
+</body>
+</html>

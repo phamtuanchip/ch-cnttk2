@@ -1,0 +1,61 @@
+<ui:composition template="/WEB-INF/templates/layout.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+	 
+	<ui:define name="content">
+		<h:form>
+			<p:growl id="msgs" showDetail="true" />
+ 		
+ 			 
+			<p:panel id="basic1" header="Sách" footer="Xem thêm"
+				style="margin-bottom:20px">
+				<h:panelGrid columns="#{homeView.books.size()}" cellpadding="10">
+					<ui:repeat var="o" value="#{homeView.books}" varStatus="status">
+						<p:graphicImage library="images" name="book03.gif" />
+						<!-- 
+						<img src="/JavaServerFaces/faces/javax.faces.resource/book.jpg?ln=images" alt="" />
+						 
+						 -->
+						
+						
+					</ui:repeat>
+				</h:panelGrid>
+			</p:panel>
+ 			
+ 			<p:panel id="basic2" header="Tạp chí" footer="Xem thêm"
+				style="margin-bottom:20px">
+				<h:panelGrid columns="#{homeView.papers.size()}" cellpadding="10">
+					<ui:repeat var="o" value="#{homeView.papers}" varStatus="status">
+						<p:graphicImage library="images" name="news_image01.gif" />
+						<!-- 
+						<img src="/JavaServerFaces/faces/javax.faces.resource/book.jpg?ln=images" alt="" />
+						 
+						 -->
+						
+						
+					</ui:repeat>
+				</h:panelGrid>
+			</p:panel>
+			
+			<p:panel id="basic3" header="Báo ngày" footer="Xem thêm"
+				style="margin-bottom:20px">
+				<h:panelGrid columns="#{homeView.dailies.size()}" cellpadding="10">
+					<ui:repeat var="o" value="#{homeView.dailies}" varStatus="status">
+						<p:graphicImage library="images" name="book01.gif" />
+						<!-- 
+						<img src="/JavaServerFaces/faces/javax.faces.resource/book.jpg?ln=images" alt="" />
+						 
+						 -->
+						
+						
+					</ui:repeat>
+				</h:panelGrid>
+			</p:panel>
+			 
+			 
+		</h:form>
+	</ui:define>
+</ui:composition>

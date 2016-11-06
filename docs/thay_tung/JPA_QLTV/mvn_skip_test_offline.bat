@@ -1,0 +1,1 @@
+call mvn clean install -o -Dmaven.test.skip=true

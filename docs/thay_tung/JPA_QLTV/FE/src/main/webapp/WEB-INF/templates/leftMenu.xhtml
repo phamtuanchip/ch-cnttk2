@@ -1,0 +1,34 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+<p:growl autoUpdate="true" />
+
+<p:panelMenu style="width:310px">
+ 
+	<p:submenu label="Danh mục">
+		<p:menuitem value="Sách" actionListener="#{menuView.viewbook}"
+			ajax="false" icon="ui-icon-bookmark" />
+		<p:menuitem value="Tạp chí" actionListener="#{menuView.viewnewspaper}"
+			ajax="false" icon="ui-icon-image" />
+		<p:menuitem value="Báo ngày" actionListener="#{menuView.viewdaily}"
+			ajax="false" icon="ui-icon-script" />
+	</p:submenu>
+	<p:separator />
+	
+	<p:submenu label="Thông tin">
+		 
+		<p:menuitem value="Phiếu mượn/trả"  icon="ui-icon-document-b"  actionListener="#{menuView.viewborrow}"
+			ajax="false" /> 
+			
+		<p:menuitem value="Độc giả"  icon="ui-icon-person"  actionListener="#{menuView.viewreader}"
+			ajax="false" /> 
+		<p:menuitem value="Nhà xuất bản"  icon="ui-icon-extlink" /> 
+		<p:menuitem value="Nhà in"  icon="ui-icon-extlink" />
+		<p:menuitem value="Thư viện liên kêt"  icon="ui-icon-extlink" />
+	</p:submenu>
+</p:panelMenu>
+
+</html>

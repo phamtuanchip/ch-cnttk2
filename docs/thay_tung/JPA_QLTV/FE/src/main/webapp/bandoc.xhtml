@@ -1,0 +1,41 @@
+<ui:composition template="/WEB-INF/templates/layout.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+	 
+	<ui:define name="content">
+		<h:form>
+			<p:growl id="messages"></p:growl>
+ 		
+ 			  <p:panel id="basic7" header="Bạn đọc" footer="Xem thêm"
+				style="margin-bottom:20px">
+				
+				
+					<h:panelGrid columns="1" cellpadding="10">
+					<p:dataTable id="doc" var="s" value="#{homeView.bandoc}">
+				<p:column headerText="Id">
+					<h:outputText value="#{s.id}" />
+				</p:column>
+
+				<p:column headerText="Mã">
+					<h:outputText value="#{s.cardNum}" />
+				</p:column>
+
+				<p:column headerText="Tên">
+					<h:outputText value="#{s.name}" />
+				</p:column>
+
+				 
+
+			</p:dataTable>
+			  
+				</h:panelGrid>
+				
+				</p:panel>
+			 
+			 
+		</h:form>
+	</ui:define>
+</ui:composition>

@@ -1,0 +1,17 @@
+1. -Tên đề tài
+    - Lý do chọn đề tài
+    - Mô tả nội dung
+    - Dự kiến kết quả
+2. Xây dựng 1 website quản lý một hệ thống (tùy chon): kinh doanh thương mại E. Adverrtising, E. Marketing, E,commerce..., giao dịch nội bộ cơ quan/đơn vị, E.government...với các chức năng cần thiết
+3. Công nghệ sử dụng: Giới thiệu và mô tả công nghệ
+    - Hoặc tạo website rồi đặt lên hosting
+    - Được sử dụng Free website builder
+4. Thuyết minh các chức năng. Nhân xét ưu/nhược điểm
+
+NỘP BÀI:
+1. Bản cứng: Đóng thành tập, hình thức theo mẫu qui định, nộp cho Khoa trong thời hạn 1 tháng sau buổi học cuối cùng
+2. Bản mềm: - đặt lên hosting
+                     - vào mục "Nhận xét" cuối bài này gửi:
+                         + địa chỉ URL
+                         + Họ tên, địa chỉ email tác giả
+(Chú ý theo dõi trả lời góp ý của giảng viên...)

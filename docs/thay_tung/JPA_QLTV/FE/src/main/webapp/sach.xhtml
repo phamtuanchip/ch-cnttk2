@@ -1,0 +1,48 @@
+<ui:composition template="/WEB-INF/templates/layout.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+	<ui:define name="content">
+		<h:form>
+			<p:growl id="messages"></p:growl>
+			<p:dataTable id="bookList" var="s" value="#{homeView.books}">
+				<p:column headerText="Id">
+					<h:outputText value="#{s.id}" />
+				</p:column>
+
+				<p:column headerText="Tên">
+					<h:outputText value="#{s.name}" />
+				</p:column>
+
+				<p:column headerText="Nhà Xuất Bản">
+					<h:outputText value="#{s.publish}" />
+				</p:column>
+
+				<p:column headerText="Năm xuất bản">
+					<h:outputText value="#{s.year}" />
+				</p:column>
+
+				<p:column headerText="Số lượng còn">
+					<h:outputText value="#{s.num}" />
+				</p:column>
+
+			</p:dataTable>
+			<p:outputLabel value="Nhập sách:"></p:outputLabel>
+			<p:panelGrid id="inputGroup" columns="2">
+				<p:outputLabel value="Tên sách:"></p:outputLabel>
+				<p:inputText value="#{homeView.sach.name}"></p:inputText>
+				<p:outputLabel value="Nhà xuất bản:"></p:outputLabel>
+				<p:inputText value="#{homeView.sach.publish}"></p:inputText>
+				<p:outputLabel value="Năm xuất bản:"></p:outputLabel>
+				<p:inputText value="#{homeView.sach.year}"></p:inputText>
+				<p:outputLabel value="Số lượng:"></p:outputLabel>
+				<p:inputText value="#{homeView.sach.num}"></p:inputText>
+			</p:panelGrid>
+			<p:commandButton value="Lưu" action="#{homeView.book}"
+				update="messages,bookList,inputGroup"></p:commandButton>
+
+		</h:form>
+	</ui:define>
+</ui:composition>

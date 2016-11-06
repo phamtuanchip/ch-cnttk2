@@ -1,0 +1,1 @@
+call ant junit-no-compile-no-prepare
