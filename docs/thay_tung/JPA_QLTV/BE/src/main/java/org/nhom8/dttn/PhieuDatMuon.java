@@ -36,7 +36,7 @@ public class PhieuDatMuon extends Phieu {
 	@OneToMany 
     @JoinColumn(name = "resevId", referencedColumnName = "itemId") 
 //    @Cascade({ org.hibernate.annotations.CascadeType.SAVE_UPDATE }) 
-    @LazyCollection(LazyCollectionOption.FALSE) 
+    @LazyCollection(LazyCollectionOption.TRUE) 
 	private List<DauMuc> items = new ArrayList<DauMuc>();
 	
 	public boolean addItem(DauMuc d) {

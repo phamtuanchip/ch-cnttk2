@@ -1,0 +1,15 @@
+
+Connected to: Oracle Database 11g Enterprise Edition Release 11.2.0.1.0 - 64bit Production
+With the Partitioning, OLAP, Data Mining and Real Application Testing options
+Export done in WE8MSWIN1252 character set and AL16UTF16 NCHAR character set
+
+About to export specified tables via Conventional Path ...
+. . exporting table                 DICH_VU_OBJTAB         29 rows exported
+. . exporting table               GIAO_DICH_OBJTAB         17 rows exported
+. . exporting table                 HOA_DON_OBJTAB          7 rows exported
+. . exporting table              KHACH_HANG_OBJTAB         10 rows exported
+. . exporting table            LOAI_DICH_VU_OBJTAB          7 rows exported
+. . exporting table               NHAN_VIEN_OBJTAB         12 rows exported
+. . exporting table               PHONG_BAN_OBJTAB          3 rows exported
+. . exporting table                 SAN_BAY_OBJTAB          1 rows exported
+Export terminated successfully without warnings.
